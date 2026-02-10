@@ -1,0 +1,81 @@
+DFA DESIGN
+==========
+
+1. FORMAL DEFINITION
+   DFA = (Q, Σ, δ, q₀, F)
+
+2. STATES (Q)
+   ┌────────┬──────────────────────────────┐
+   │ State  │ Meaning                      │
+   ├────────┼──────────────────────────────┤
+   │  Q0    │ Start / Idle                 │
+   │  Q1    │ Username entered             │
+   │  Q2    │ Password entered             │
+   │  Q3    │ Login successful (Final)     │
+   │  QE    │ Error / Dead state           │
+   └────────┴──────────────────────────────┘
+
+3. INPUT ALPHABET (Σ)
+   Σ = { u, p, s, x }
+
+   u → Username entered (non-empty username field completed)
+   p → Password entered (non-empty password field completed)
+   s → Submit button pressed
+   x → Any invalid / unexpected input
+
+4. TRANSITION FUNCTION (δ)
+   ┌──────────┬───────┬──────────┐
+   │ Current  │ Input │   Next   │
+   ├──────────┼───────┼──────────┤
+   │   Q0     │   u   │   Q1     │
+   │   Q0     │ p,s,x │   QE     │
+   │   Q1     │   p   │   Q2     │
+   │   Q1     │ u,s,x │   QE     │
+   │   Q2     │   s   │   Q3     │
+   │   Q2     │ u,p,x │   QE     │
+   │   Q3     │  any  │   Q3     │
+   │   QE     │  any  │   QE     │
+   └──────────┴───────┴──────────┘
+
+5. START STATE (q₀)
+   q₀ = Q0
+
+6. ACCEPTING / FINAL STATES (F)
+   F = { Q3 }
+
+7. STATE DIAGRAM
+
+   ┌────┐  u   ┌────┐  p   ┌────┐  s   ╔════╗
+   │ Q0 │─────▶│ Q1 │─────▶│ Q2 │─────▶║ Q3 ║
+   └────┘      └────┘      └────┘      ╚════╝
+     │           │           │
+     │ p,s,x     │ u,s,x     │ u,p,x
+     ▼           ▼           ▼
+   ┌─────────────────────────────┐
+   │            QE               │◀── (Dead State)
+   │        (Error State)        │───▶ QE (self-loop)
+   └─────────────────────────────┘
+
+8. VALID SEQUENCE EXAMPLE
+   Input:  u → p → s
+   Trace:  Q0 →(u)→ Q1 →(p)→ Q2 →(s)→ Q3 ✓ (Accepted)
+
+9. INVALID SEQUENCE EXAMPLES
+   a) Password before Username:
+      Input:  p
+      Trace:  Q0 →(p)→ QE ✗ (Rejected)
+
+   b) Submit without Password:
+      Input:  u → s
+      Trace:  Q0 →(u)→ Q1 →(s)→ QE ✗ (Rejected)
+
+   c) Direct Submit:
+      Input:  s
+      Trace:  Q0 →(s)→ QE ✗ (Rejected)
+
+10. IMPLEMENTATION NOTES
+    - The DFA engine runs entirely on the ESP32 microcontroller
+    - Each web interaction sends a single symbol to the DFA
+    - State transitions are computed using a switch-case structure
+    - The QE (Error) state is a dead/trap state with no escape
+    - Users must reset the DFA to try again after an error

@@ -1,0 +1,42 @@
+PROBLEM STATEMENT
+=================
+
+In modern web-based and IoT authentication systems, the login process
+requires users to follow a strict sequence of steps:
+
+  1. Enter a valid username
+  2. Enter a valid password
+  3. Submit the credentials
+
+However, many systems do not enforce the order of these steps at the
+protocol level. This can lead to:
+
+  - Submitting a form without entering a username
+  - Entering a password before the username
+  - Submitting without providing any credentials
+  - Bypassing steps through direct API manipulation
+
+These invalid sequences can create security vulnerabilities, unexpected
+system states, and poor user experience.
+
+PROBLEM:
+  How can we formally validate that a login process follows the correct
+  sequence of input steps, and reject any deviation immediately?
+
+PROPOSED SOLUTION:
+  This project uses a Deterministic Finite Automaton (DFA) to model and
+  enforce the login sequence. The DFA provides:
+
+  - A mathematically proven model for sequence validation
+  - Immediate rejection of invalid input orders
+  - Clear, deterministic behavior for every possible input
+  - No ambiguity in state transitions
+
+  The DFA is implemented on an ESP32 microcontroller that operates as
+  a Wi-Fi Access Point with a web-based login interface. Each user
+  action is mapped to a DFA input symbol, and the transition function
+  determines whether to proceed or reject the attempt.
+
+  This approach bridges the gap between formal automata theory and
+  practical embedded system design, demonstrating real-world applicability
+  of computer science fundamentals.

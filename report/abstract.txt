@@ -1,0 +1,31 @@
+ABSTRACT
+========
+
+Wi-Fi Login Sequence Validator using Deterministic Finite Automaton (DFA)
+
+This project presents a Wi-Fi login authentication system that validates
+the login process using Deterministic Finite Automaton (DFA) rules, running
+on an ESP32 microcontroller.
+
+In conventional login systems, input sequence validation is often handled
+through ad-hoc conditional logic. This project instead employs a formal
+DFA model to enforce the correct order of operations during authentication:
+username entry → password entry → submit.
+
+The ESP32 operates as a Wi-Fi Access Point and hosts a web-based login page.
+When a user interacts with the login form, each action (entering a username,
+entering a password, clicking submit) is mapped to a DFA input symbol.
+The DFA engine on the ESP32 processes these symbols through its transition
+function, moving between states Q0 (Idle), Q1 (Username Entered),
+Q2 (Password Entered), Q3 (Login Successful), and QE (Error).
+
+If the user follows the correct sequence (u → p → s), the DFA reaches
+its accepting state Q3 and the login is successful. Any deviation from
+the expected sequence transitions the DFA to the error state QE,
+immediately rejecting the login attempt.
+
+This approach demonstrates how formal language theory and automata concepts
+can be practically applied to embedded IoT systems, providing a structured,
+predictable, and mathematically grounded validation mechanism.
+
+Keywords: DFA, ESP32, Wi-Fi, Authentication, Automata Theory, IoT, Embedded Systems
